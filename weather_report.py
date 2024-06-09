@@ -2,6 +2,7 @@
 import os
 import requests
 import json
+import time
 from bs4 import BeautifulSoup
 
 # 从测试号信息获取
@@ -81,8 +82,8 @@ def get_daily_love():
     return daily_love
 
 
-def send_weather(access_token, openIds, weather):
-    # touser 就是 openIds
+def send_weather(access_token, openId, weather):
+    # touser 就是 openId
     # template_id 就是模板ID
     # url 就是点击模板跳转的url
     # data就按这种格式写，time和text就是之前{{time.DATA}}中的那个time，value就是你要替换DATA的值
@@ -92,7 +93,7 @@ def send_weather(access_token, openIds, weather):
     today_str = today.strftime("%Y年%m月%d日")
 
     body = {
-        "touser": openIds,
+        "touser": openId,
         "template_id": weather_template_id.strip(),
         "url": "https://weixin.qq.com",
         "data": {
@@ -129,9 +130,10 @@ def weather_report(this_city):
     print(f"天气信息： {weather}")
     
     openIds = target_openId.strip().split(",")
-    print(f"openIds： {openIds}")
-    # 3. 发送消息
-    send_weather(access_token, openIds, weather)
+    for openId in openIds:
+        time.sleep(5)
+        # 3. 发送消息
+        send_weather(access_token, openId, weather)
 
 
 
