@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 appID = os.environ.get("APP_ID")
 appSecret = os.environ.get("APP_SECRET")
 # 收信人ID即 用户列表中的微信号
-openId = os.environ.get("OPEN_ID")
+target_openId = os.environ.get("OPEN_ID")
 # 天气预报模板ID
 weather_template_id = os.environ.get("TEMPLATE_ID")
 # 目标城市
@@ -81,8 +81,8 @@ def get_daily_love():
     return daily_love
 
 
-def send_weather(access_token, weather):
-    # touser 就是 openID
+def send_weather(access_token, openIds, weather):
+    # touser 就是 openIds
     # template_id 就是模板ID
     # url 就是点击模板跳转的url
     # data就按这种格式写，time和text就是之前{{time.DATA}}中的那个time，value就是你要替换DATA的值
@@ -92,7 +92,7 @@ def send_weather(access_token, weather):
     today_str = today.strftime("%Y年%m月%d日")
 
     body = {
-        "touser": openId.strip(),
+        "touser": openIds,
         "template_id": weather_template_id.strip(),
         "url": "https://weixin.qq.com",
         "data": {
@@ -127,8 +127,10 @@ def weather_report(this_city):
     # 2. 获取天气
     weather = get_weather(this_city)
     print(f"天气信息： {weather}")
+    
+    openids = target_openId.strip().split(",")
     # 3. 发送消息
-    send_weather(access_token, weather)
+    send_weather(access_token, openIds, weather)
 
 
 
